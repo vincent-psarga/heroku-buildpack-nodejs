@@ -17,7 +17,9 @@ BPLOG_PREFIX="buildpack.nodejs"
 
 ### Configure directories
 
-BUILD_DIR=${1:-}
+APP_BASE="$(cat "${ENV_DIR}/APP_BASE")"
+
+BUILD_DIR="${1:-}/$APP_BASE"
 CACHE_DIR=${2:-}
 ENV_DIR=${3:-}
 BP_DIR=$(cd "$(dirname "${0:-}")"; cd ..; pwd)
