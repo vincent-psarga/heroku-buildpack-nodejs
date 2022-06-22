@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 # bin/detect <build-dir>
+exit 0
 
 [ "$BUILDPACK_XTRACE" ] && set -o xtrace
-
-APP_BASE="$(cat "${ENV_DIR}/APP_BASE")"
-BUILD_DIR="${1:-}/$APP_BASE"
 
 error() {
   local c="2,999 s/^/ !     /"
@@ -22,12 +20,12 @@ error() {
 	exit 1
 }
 
-if [ -f "$BUILD_DIR/package.json" ]; then
+if [ -f "$1/package.json" ]; then
   echo 'Node.js'
   exit 0
 fi
 
-if [[ -f "$BUILD_DIR/.slugignore" ]] && grep -Fxq "package.json" "$BUILD_DIR/.slugignore"; then
+if [[ -f "$1/.slugignore" ]] && grep -Fxq "package.json" "$1/.slugignore"; then
   error << EOF
 'package.json' listed in '.slugignore' file
 
@@ -38,7 +36,7 @@ the '.slugignore' file is removing it before the build begins.
 For more information, refer to the following documentation:
 https://devcenter.heroku.com/articles/slug-compiler#ignoring-files-with-slugignore
 EOF
-elif [[ -f "$BUILD_DIR/.gitignore" ]] && grep -Fxq "package.json" "$BUILD_DIR/.gitignore"; then
+elif [[ -f "$1/.gitignore" ]] && grep -Fxq "package.json" "$1/.gitignore"; then
   error << EOF
 'package.json' listed in '.gitignore' file
 
@@ -64,7 +62,7 @@ If you are trying to deploy a Node.js application, ensure that this
 file is present at the top level directory. This directory has the
 following files:
 
-$(ls -1p "$BUILD_DIR")
+$(ls -1p "$1")
 
 If you are trying to deploy an application written in another
 language, you need to change the list of buildpacks set on your
